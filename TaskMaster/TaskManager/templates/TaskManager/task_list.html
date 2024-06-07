@@ -1,0 +1,90 @@
+{% extends "TaskManager/main.html" %}
+{% block content %}
+
+<header>
+    <div>
+        <h1>Привет {{ request.user.first_name }}</h1>
+        {% load users_extras %}
+        <h3>У тебя <i>{{count}}</i> невыполненн{{count|ru_plural:"ное,ных,ных"}} де{{count|ru_plural:"ло,ла,л"}}</h3>
+    </div>
+    {% if request.user.is_authenticated %}
+    <form method="post" action="{% url 'logout' %}" style="position: absolute; right: 20px; top: 20px;">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit" value="Logout">Выйти</button>
+    </form>
+    {% else %}
+    <a href ="{% url 'login' %}">Войти</a>
+    {% endif %}
+    
+    <div class="input-section">
+            <form method="GET" style="display: flex;"> 
+                <input type="text" name="search-area" style="margin-right: 10px; margin-top: 10px;" class="input input-bordered input-secondary w-full max-w-xs" placeholder="Потеряли задачу . . ." value="{{search_input}}">
+                <input class="btn btn-secondary add-task-button" style="margin-top: 10px;" type="submit" value="Найти">
+                <a class="btn btn-secondary add-task-button" style="margin-top: 10px;" id="add-link" href = "{% url 'task-create' %}"><i class='bx bx-plus bx-md bx-spin-hover'></i></a>
+            </form>
+    </div>
+</header>
+
+<div class="table-wrapper">
+    <table class="table w-full">
+        <thead class="table-header">
+            <tr>
+                <th>Статус</th>
+                <th>Задача</th>
+                <th>Дедлайн</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            {% if not task.complete %}
+            <tr class="task-row">
+                <td class="task-status">
+                    <div class="task-incomplete-icon"></div>
+                </td>
+                <td class="task-title">
+                    <a href="{% url 'task-update' task.id %}">{{task}}</a>
+                </td>
+                <td>{{ task.due_date|default:"Нет даты" }}</td> 
+                <td class="action-buttons">
+                    <form method="post" action="{% url 'task-complete' task.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-success btn-sm " type="submit"><i class='bx bx-check bx-tada-hover'></i></button>
+                    </form>
+                    <a class="btn btn-error btn-sm " href="{% url 'task-delete' task.id %}"><i class='bx bxs-trash bx-tada-hover'></i></a>
+                    <a class="btn btn-warning btn-sm" href="{% url 'task-update' task.id %}"><i class='bx bx-edit bx-tada-hover'></i></a>
+                </td>
+            </tr>
+            {% endif %}
+            {% empty %}
+            <tr>
+                <td colspan="4"><h3>У вас пока нет никаких задач(</h3></td>
+            </tr>
+            {% endfor %}
+            {% for task in tasks %}
+            {% if task.complete %}
+            <tr class="task-row">
+                <td class="task-status">
+                    <div class="task-complete-icon"></div>
+                </td>
+                <td class="task-title">
+                    <i><s><a href="{% url 'task-update' task.id %}">{{task}}</a></s></i>
+                </td>
+                <td>{{ task.due_date|default:"Нет даты" }}</td> 
+                <td class="action-buttons">
+                    <form method="post" action="{% url 'task-complete' task.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-success btn-sm " type="submit"><i class='bx bx-check bx-tada-hover'></i></button>
+                    </form>
+                    <a class="btn btn-error btn-sm " href="{% url 'task-delete' task.id %}"><i class='bx bxs-trash bx-tada-hover'></i></a>
+                    <a class="btn btn-warning btn-sm" href="{% url 'task-update' task.id %}"><i class='bx bx-edit bx-tada-hover'></i></a>
+                </td>
+            </tr>
+            {% endif %}
+            {% empty %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

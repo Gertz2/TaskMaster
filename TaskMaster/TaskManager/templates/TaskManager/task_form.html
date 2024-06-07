@@ -1,0 +1,37 @@
+{% extends "TaskManager/main.html" %}
+{% block content %}
+
+<div class="card-body" style="padding: 16px;">
+            
+        <form method="POST" action="" class="mt-4">
+            {% csrf_token %}
+            
+            <a class="btn btn-secondary" style="margin-bottom: 10px;" href="{% url 'tasks' %}">&#8592; Назад</a>
+
+            <div class="mb-3">
+                <label>Задача:</label>
+                {{ form.title }}
+            </div>
+            
+            <div class="mb-3">
+                <label>Описание:</label>
+                {{ form.description }}
+            </div>
+            
+            <div class="mb-3">
+                <label>Выполнено:</label>
+                {{ form.complete }}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.due_date.id_for_label }}" class="form-label">Дедлайн:</label>
+                <div class="input-group d-flex align-items-center">
+                    <input type="date" class="form-control border border-2 border-dark" id="{{ form.due_date.id_for_label }}" name="{{ form.due_date.html_name }}" value="{{ form.due_date.value }}" style="border: 2px solid #000; margin-top: 5px;">
+                </div>
+            </div>
+
+        <input class="btn btn-success" type="submit" value="Подтвердить">
+    </form>
+</div>
+
+{% endblock content %}

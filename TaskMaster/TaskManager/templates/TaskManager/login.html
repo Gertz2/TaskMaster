@@ -1,0 +1,23 @@
+{% extends "TaskManager/main.html" %}
+{% block content %}
+
+<div class="card-body">
+    
+    <h1>Вход</h1>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <label for="id_username">Логин:</label>
+        {{ form.username }}
+
+        <label for="id_password">Пароль:</label>
+        {{ form.password }}
+        
+        <input class="btn btn-secondary" type="submit" value="Войти">
+    </form>
+    
+    <p>Нет аккаунта? <a class="btn btn-primary" href="{% url 'register' %}">Зарегистрироваться</a></p>
+</div>
+
+{% endblock content %}
